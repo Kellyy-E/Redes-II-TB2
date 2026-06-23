@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  servidor:
+    build:
+      context: ../../     
+      dockerfile: Dockerfile
+    container_name: servidor_redes
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - ../../:/app        # Mapeia o projeto inteiro para dentro de /app
+    ports:
+      - "5000:5000/tcp"
+      - "5001:5001/udp"
+    networks:
+      - rede_trabalho
+
+  cliente:
+    build:
+      context: ../../
+      dockerfile: Dockerfile
+    container_name: cliente_redes
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - ../../:/app
+    depends_on:
+      - servidor
+    networks:
+      - rede_trabalho
+
+networks:
+  rede_trabalho:
+    driver: bridge

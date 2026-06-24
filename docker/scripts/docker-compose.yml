@@ -1,35 +1,90 @@
-version: '3.8'
+networks:
+  rede_testes:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24
 
 services:
-  servidor:
+
+  # ── Servidor DNS ─────────────────────────────────────────────────────────────
+  servidor-dns:
     build:
-      context: ../../     
+      context: ../..
       dockerfile: Dockerfile
-    container_name: servidor_redes
+    container_name: servidor-dns
+    hostname: servidor-dns
+    networks:
+      rede_testes:
+        ipv4_address: 172.20.0.2
+    volumes:
+      - ../../data:/app/data
+      - ../../src:/app/src
+    working_dir: /app
+    command: python3 src/dns/servidor_dns.py
+    restart: unless-stopped
+
+  # ── Servidor Web TCP ─────────────────────────────────────────────────────────
+  # Sobe um de cada vez. Para TCP: docker compose up servidor-web-tcp -d
+  servidor-web-tcp:
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+    container_name: servidor-web-tcp
+    hostname: servidor-web
+    networks:
+      rede_testes:
+        ipv4_address: 172.20.0.3
+    volumes:
+      - ../../data:/app/data
+      - ../../src:/app/src
+    working_dir: /app
+    command: python3 src/http/servidor_http_tcp.py 8080
+    ports:
+      - "8080:8080"
     cap_add:
       - NET_ADMIN
-    volumes:
-      - ../../:/app        # Mapeia o projeto inteiro para dentro de /app
-    ports:
-      - "5000:5000/tcp"
-      - "5001:5001/udp"
-    networks:
-      - rede_trabalho
+    restart: unless-stopped
 
+  # ── Servidor Web R-UDP ───────────────────────────────────────────────────────
+  # Para R-UDP: docker compose up servidor-web-rudp -d
+  servidor-web-rudp:
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+    container_name: servidor-web-rudp
+    hostname: servidor-web
+    networks:
+      rede_testes:
+        ipv4_address: 172.20.0.3
+    volumes:
+      - ../../data:/app/data
+      - ../../src:/app/src
+    working_dir: /app
+    command: python3 src/http/servidor_http_rudp.py 8081
+    ports:
+      - "8081:8081/udp"
+    cap_add:
+      - NET_ADMIN
+    restart: unless-stopped
+
+  # ── Cliente ──────────────────────────────────────────────────────────────────
   cliente:
     build:
-      context: ../../
+      context: ../..
       dockerfile: Dockerfile
-    container_name: cliente_redes
+    container_name: cliente
+    hostname: cliente
+    networks:
+      rede_testes:
+        ipv4_address: 172.20.0.4
+    volumes:
+      - ../../data:/app/data
+      - ../../src:/app/src
+      - ../../docker:/app/docker
+      - ../../orquestrador_testes.py:/app/orquestrador_testes.py
+    working_dir: /app
     cap_add:
       - NET_ADMIN
-    volumes:
-      - ../../:/app
-    depends_on:
-      - servidor
-    networks:
-      - rede_trabalho
-
-networks:
-  rede_trabalho:
-    driver: bridge
+    command: sleep infinity
+    restart: unless-stopped

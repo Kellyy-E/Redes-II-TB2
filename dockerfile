@@ -1,17 +1,25 @@
-FROM python:3.14-slim
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y \
+    python3 \
+    python3-pip \
     iproute2 \
     tcpdump \
+    iputils-ping \
     && rm -rf /var/lib/apt/lists/*
 
-# Define o diretório de trabalho dentro do container
 WORKDIR /app
 
-ENV PYTHONPATH=/app
+COPY src/ ./src/
+COPY data/ ./data/
+COPY docker/ ./docker/
+COPY orquestrador_testes.py ./orquestrador_testes.py
+COPY gerar_arquivos_teste.py ./gerar_arquivos_teste.py
 
-# Copia todo o conteúdo do meu projeto para dentro do container
-COPY . /app/
+RUN chmod +x ./docker/scripts/simular_rede.sh
 
-# O container inicia sem fazer nada 
-CMD ["tail", "-f", "/dev/null"]
+RUN mkdir -p data/www data/recebidos data/capturas
+
+CMD ["python3", "--version"]

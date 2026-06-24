@@ -1,4 +1,8 @@
-# Arquivo estático de zona local (hosts.txt)
-localhost 127.0.0.1
-servidor-web 192.168.1.100
-servidor-rudp 192.168.1.101
+# Arquivo de zona do Mini-DNS
+# Formato: nome_dominio  IP
+# IPs definidos no docker-compose.yml
+
+servidor-dns    172.20.0.2
+servidor-web    172.20.0.3
+cliente         172.20.0.4
+localhost       127.0.0.1

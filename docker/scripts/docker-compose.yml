@@ -27,7 +27,6 @@ services:
     restart: unless-stopped
 
   # ── Servidor Web TCP ─────────────────────────────────────────────────────────
-  # Sobe um de cada vez. Para TCP: docker compose up servidor-web-tcp -d
   servidor-web-tcp:
     build:
       context: ../..
@@ -49,7 +48,6 @@ services:
     restart: unless-stopped
 
   # ── Servidor Web R-UDP ───────────────────────────────────────────────────────
-  # Para R-UDP: docker compose up servidor-web-rudp -d
   servidor-web-rudp:
     build:
       context: ../..

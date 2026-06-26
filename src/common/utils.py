@@ -68,8 +68,8 @@ def salvar_log_csv(protocolo, arquivo, tempo_inicio, tempo_fim,
     tamanho_label = nome_base.replace("arquivo_", "").replace(".bin", "").upper()
     # ex: "1MB", "100KB", "10MB"
 
-    sufixo_cenario = f"_{cenario}" if cenario else ""
-    nome_csv = f"{protocolo}{sufixo_cenario}_{tamanho_label}.csv"
+ # Removemos o sufixo do cenário do nome do arquivo
+    nome_csv = f"{protocolo}_{tamanho_label}.csv"
     log_file = os.path.join(log_dir, nome_csv)
 
     file_exists = os.path.isfile(log_file)

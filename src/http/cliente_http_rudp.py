@@ -104,7 +104,11 @@ def receber_via_rudp(sock):
             if pacote.flags == FLAG_FIN:
                 ack_fin = Packet(seq=pacote.seq, flags=FLAG_ACK,
                                  auth_hash=pacote.auth_hash.decode())
-                sock.sendto(ack_fin.pack(), addr)
+                
+                # <--- NOVA REDUNDÂNCIA: Envia o ACK várias vezes 
+                # para garantir que o servidor receba, mesmo com 10% de perda
+                for _ in range(5):  
+                    sock.sendto(ack_fin.pack(), addr)
                 break
 
             elif pacote.flags == FLAG_DATA:

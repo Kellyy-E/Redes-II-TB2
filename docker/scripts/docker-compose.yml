@@ -20,6 +20,8 @@ services:
     volumes:
       - ../../data:/app/data
       - ../../src:/app/src
+    ports:
+    - "53:53/udp" 
     working_dir: /app
     command: python3 src/dns/servidor_dns.py
     restart: unless-stopped

@@ -3,7 +3,7 @@ import os
 
 HOSTS_FILE = os.path.join(os.path.dirname(__file__), '../../data/hosts.txt')
 DNS_HOST = '0.0.0.0'
-DNS_PORT = 5354
+DNS_PORT = 53
 
 def carregar_hosts():
     """Carrega o arquivo hosts.txt para um dicionário em memória."""

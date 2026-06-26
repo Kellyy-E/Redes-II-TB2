@@ -22,7 +22,7 @@ import sys
 
 EXECUCOES  = 10
 IP_DNS     = "servidor-dns"
-PORTA_DNS  = 5354
+PORTA_DNS  = 53
 NOME_HOST  = "servidor-web"
 
 # Nome do container cliente definido no docker-compose.yml
@@ -108,8 +108,8 @@ def main():
     limpar_rede()
 
     print(f"\n[OK] Concluído. CSVs salvos em data/logs/:")
-    print(f"     HTTP-{protocolo.upper()}_{cenario}_{tamanho}.csv")
-    print(f"     DNS-{protocolo.upper()}_{cenario}_{tamanho}.csv")
+    print(f"     HTTP-{protocolo.upper()}_{tamanho}.csv")
+    print(f"     DNS-{protocolo.upper()}_{tamanho}.csv")
 
 
 if __name__ == "__main__":

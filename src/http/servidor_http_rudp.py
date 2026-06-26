@@ -13,6 +13,8 @@ import socket
 import os
 import sys
 
+
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../.."))
 from src.common.utils import (Packet, calcular_checksum, gerar_x_custom_auth,
                                FLAG_DATA, FLAG_ACK, FLAG_FIN)
@@ -147,7 +149,10 @@ def enviar_resposta_rudp(sock, addr, dados, auth_hash):
     # Sinaliza fim da resposta com FIN
     pacote_fin = Packet(seq=seq, flags=FLAG_FIN, auth_hash=auth_hash, data=b'')
     fin_confirmado = False
-    while not fin_confirmado:
+    tentativas_fin = 0  # <--- NOVA VARIÁVEL
+    
+    # <--- ADICIONADO O LIMITE DE TENTATIVAS NO WHILE
+    while not fin_confirmado and tentativas_fin < 10: 
         sock.sendto(pacote_fin.pack(), addr)
         try:
             ack_bytes, addr_ack = sock.recvfrom(8192)
@@ -157,7 +162,8 @@ def enviar_resposta_rudp(sock, addr, dados, auth_hash):
             if ack_obj.flags == FLAG_ACK and ack_obj.seq == seq:
                 fin_confirmado = True
         except socket.timeout:
-            print("[HTTP-RUDP] Timeout no FIN. Reenviando...")
+            tentativas_fin += 1 # <--- INCREMENTA A TENTATIVA
+            print(f"[HTTP-RUDP] Timeout no FIN. Reenviando ({tentativas_fin}/10)...")
 
 
 def iniciar_servidor_http_rudp(porta=8081):

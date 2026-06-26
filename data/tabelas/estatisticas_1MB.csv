@@ -1,0 +1,13 @@
+Protocolo,Cenário,Fonte,Media,DesvPad,Minimo,Maximo,N
+RUDP,cenarioA,Aplicação,317.13,1.24,315.57,319.57,10
+RUDP,cenarioA,Captura,317.17,1.24,315.59,319.59,10
+RUDP,cenarioB,Aplicação,50.56,4.16,44.85,57.49,10
+RUDP,cenarioB,Captura,50.7,4.23,44.85,57.49,10
+RUDP,cenarioC,Aplicação,24.69,1.53,22.4,26.83,10
+RUDP,cenarioC,Captura,24.76,1.65,22.4,27.55,10
+TCP,cenarioA,Aplicação,3208.13,433.73,2101.37,3622.43,10
+TCP,cenarioA,Captura,3212.02,433.99,2103.85,3624.82,10
+TCP,cenarioB,Aplicação,1607.25,407.09,647.81,1889.22,9
+TCP,cenarioB,Captura,1669.13,243.26,1250.57,1892.41,9
+TCP,cenarioC,Aplicação,966.14,208.83,509.61,1128.18,9
+TCP,cenarioC,Captura,1006.64,163.94,647.56,1129.12,9

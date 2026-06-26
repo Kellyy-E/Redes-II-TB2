@@ -1,15 +1,3 @@
-"""
-Gerador dos arquivos binários de teste.
-Cria três arquivos com tamanhos diferentes em data/www/,
-que serão servidos pelo miniservidor HTTP.
-
-Uso:
-    python3 gerar_arquivos_teste.py
-
-Os arquivos gerados são preenchidos com bytes aleatórios
-para simular dados reais e evitar compressão artificial pelo SO.
-"""
-
 import os
 import sys
 
@@ -55,9 +43,6 @@ def main():
         caminho = os.path.join(DESTINO, nome)
         tam = os.path.getsize(caminho)
         print(f"  {nome}: {tam / 1024:.1f} KB")
-
-    print("\nPronto! Coloque esses arquivos dentro do container ou monte o volume data/www/.")
-
 
 if __name__ == "__main__":
     main()

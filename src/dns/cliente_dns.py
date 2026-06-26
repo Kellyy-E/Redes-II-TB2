@@ -2,11 +2,6 @@ import socket
 import random
 
 def resolver_nome(nome_dominio, dns_ip='127.0.0.1', dns_port=53, timeout=2.0, max_tentativas=3):
-    """
-    Resolve um nome de domínio consultando o Miniservidor DNS via UDP.
-    Implementa retransmissão em caso de timeout (perda de pacotes).
-    Retorna o IP resolvido ou None em caso de falha/timeout.
-    """
     req_id = str(random.randint(1000, 9999))
     mensagem = f"{req_id}|{nome_dominio}"
     
@@ -50,7 +45,6 @@ def resolver_nome(nome_dominio, dns_ip='127.0.0.1', dns_port=53, timeout=2.0, ma
     finally:
         sock.close()
 
-# Bloco de teste independente
 if __name__ == "__main__":
     ip = resolver_nome("servidor-web")
     print(f"IP final obtido no teste: {ip}")

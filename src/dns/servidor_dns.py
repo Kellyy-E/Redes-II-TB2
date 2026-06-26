@@ -24,7 +24,6 @@ def carregar_hosts():
 def iniciar_servidor_dns():
     tabela_hosts = carregar_hosts()
     
-    # Operando exclusivamente via UDP nativo
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.bind((DNS_HOST, DNS_PORT))
     
@@ -35,7 +34,6 @@ def iniciar_servidor_dns():
         mensagem = dados.decode('utf-8')
         
         try:
-            # Formato esperado da requisição: "ID|Name"
             partes = mensagem.split('|')
             if len(partes) >= 2:
                 req_id = partes[0]
@@ -43,10 +41,8 @@ def iniciar_servidor_dns():
                 
                 print(f"[DNS] Consulta recebida de {endereco_cliente}: ID={req_id}, Name={req_name}")
                 
-                # Resolução do IP
                 ip_resolvido = tabela_hosts.get(req_name, "0.0.0.0") # 0.0.0.0 simula "Not Found"
                 
-                # Formato simplificado de resposta: "ID|Name|IP"
                 resposta = f"{req_id}|{req_name}|{ip_resolvido}"
                 sock.sendto(resposta.encode('utf-8'), endereco_cliente)
                 print(f"[DNS] Resposta enviada: {resposta}")

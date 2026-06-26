@@ -1,13 +1,3 @@
-"""
-Miniservidor HTTP/1.1 sobre TCP nativo.
-Responde requisições GET servindo arquivos de data/www/.
-Inclui o cabeçalho X-Custom-Auth em todas as respostas.
-
-Uso:
-    python3 servidor_http_tcp.py [porta]
-    Padrão: porta 8080
-"""
-
 import socket
 import os
 import sys
@@ -79,7 +69,6 @@ def tratar_conexao(conn, addr, auth_hash):
             conn.close()
             return
 
-        # Normaliza o caminho e previne path traversal
         caminho_req = caminho_req.split("?")[0].lstrip("/") or "index.html"
         caminho_local = os.path.normpath(os.path.join(PASTA_WWW, caminho_req))
 

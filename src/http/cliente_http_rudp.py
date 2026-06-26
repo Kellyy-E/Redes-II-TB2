@@ -1,14 +1,3 @@
-"""
-Cliente HTTP sobre R-UDP (Stop-and-Wait).
-Fluxo: DNS → envia GET via R-UDP → recebe resposta via R-UDP → salva → CSV.
-
-Uso:
-    python3 cliente_http_rudp.py <nome_host> <arquivo> <cenario> [ip_dns] [porta_dns]
-    Exemplos:
-        python3 cliente_http_rudp.py servidor-web arquivo_100kb.bin cenarioA servidor-dns 5354
-        python3 cliente_http_rudp.py servidor-web arquivo_10mb.bin  cenarioC servidor-dns 5354
-"""
-
 import socket
 import os
 import sys
@@ -105,7 +94,7 @@ def receber_via_rudp(sock):
                 ack_fin = Packet(seq=pacote.seq, flags=FLAG_ACK,
                                  auth_hash=pacote.auth_hash.decode())
                 
-                # <--- NOVA REDUNDÂNCIA: Envia o ACK várias vezes 
+                # Envia o ACK várias vezes 
                 # para garantir que o servidor receba, mesmo com 10% de perda
                 for _ in range(5):  
                     sock.sendto(ack_fin.pack(), addr)

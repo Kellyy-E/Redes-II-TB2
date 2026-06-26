@@ -48,15 +48,7 @@ class Packet:
 
 def salvar_log_csv(protocolo, arquivo, tempo_inicio, tempo_fim,
                    tamanho_bytes, cenario=""):
-    """
-    Salva métricas em um CSV separado por protocolo, cenário e tamanho de arquivo.
 
-    Nome do arquivo gerado:
-        data/logs/<PROTOCOLO>_<cenario>_<tamanho>.csv
-    Exemplo:
-        data/logs/HTTP-TCP_cenarioA_100KB.csv
-        data/logs/HTTP-RUDP_cenarioB_1MB.csv
-    """
     duracao   = tempo_fim - tempo_inicio
     throughput = (tamanho_bytes / 1024) / duracao if duracao > 0 else 0
 

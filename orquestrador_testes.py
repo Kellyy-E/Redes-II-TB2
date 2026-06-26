@@ -1,21 +1,3 @@
-"""
-Orquestrador de Testes — Terceira Avaliação
-Uso (no Git Bash, fora do container):
-    python orquestrador_testes.py <protocolo> <cenario> <tamanho>
-
-    protocolo : tcp | rudp
-    cenario   : cenarioA | cenarioB | cenarioC
-    tamanho   : 100KB | 1MB | 10MB
-
-Exemplos:
-    python orquestrador_testes.py tcp  cenarioA 100KB
-    python orquestrador_testes.py rudp cenarioB 1MB
-    python orquestrador_testes.py tcp  cenarioC 10MB
-
-O orquestrador aplica o cenário de rede e roda os clientes
-todos dentro do container via 'docker exec'.
-"""
-
 import subprocess
 import time
 import sys
@@ -25,7 +7,6 @@ IP_DNS     = "servidor-dns"
 PORTA_DNS  = 53
 NOME_HOST  = "servidor-web"
 
-# Nome do container cliente definido no docker-compose.yml
 CONTAINER_CLIENTE = "cliente"
 
 ARQUIVOS = {

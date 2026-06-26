@@ -1,14 +1,3 @@
-"""
-Miniservidor HTTP/1.1 sobre R-UDP (Stop-and-Wait).
-Recebe a requisição GET empacotada em R-UDP, processa e devolve
-a resposta HTTP completa também via R-UDP.
-Inclui o cabeçalho X-Custom-Auth em todas as respostas.
-
-Uso:
-    python3 servidor_http_rudp.py [porta]
-    Padrão: porta 8081
-"""
-
 import socket
 import os
 import sys
@@ -70,10 +59,6 @@ def parsear_get(dados_brutos):
 
 
 def receber_request_rudp(sock):
-    """
-    Recebe a requisição GET enviada via R-UDP pelo cliente.
-    Retorna (dados_brutos, addr_cliente) ou (None, None) em caso de erro.
-    """
     dados = b""
     addr_cliente = None
     seq_esperado = 0

@@ -1,14 +1,3 @@
-"""
-Cliente HTTP sobre TCP nativo.
-Fluxo: DNS → GET HTTP/TCP → salva arquivo → registra métricas em CSV.
-
-Uso:
-    python3 cliente_http_tcp.py <nome_host> <arquivo> <cenario> [ip_dns] [porta_dns]
-    Exemplos:
-        python3 cliente_http_tcp.py servidor-web arquivo_100kb.bin cenarioA servidor-dns 5354
-        python3 cliente_http_tcp.py servidor-web arquivo_1mb.bin   cenarioB servidor-dns 5354
-"""
-
 import socket
 import os
 import sys
@@ -57,7 +46,6 @@ def requisitar_arquivo_tcp(nome_host, arquivo, cenario,
     print(f"\n{'='*60}")
     print(f"[TCP] Arquivo: {arquivo} | Cenário: {cenario}")
 
-    # ── Passo 1: resolução DNS ────────────────────────────────────────────────
     t_dns_ini = time.time()
     ip_servidor = resolver_nome(nome_host, ip_dns, porta_dns)
     t_dns_fim = time.time()
@@ -67,7 +55,6 @@ def requisitar_arquivo_tcp(nome_host, arquivo, cenario,
         return
     print(f"[TCP] DNS: {ip_servidor} ({(t_dns_fim-t_dns_ini)*1000:.1f} ms)")
 
-    # ── Passo 2: requisição HTTP via TCP ──────────────────────────────────────
     t_http_ini = time.time()
     try:
         cliente = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -91,7 +78,6 @@ def requisitar_arquivo_tcp(nome_host, arquivo, cenario,
 
     t_http_fim = time.time()
 
-    # ── Passo 3: processar resposta ───────────────────────────────────────────
     cabecalho_bytes, corpo = extrair_corpo(dados_brutos)
     status   = parsear_status(cabecalho_bytes)
     tamanho  = len(corpo)
@@ -101,7 +87,6 @@ def requisitar_arquivo_tcp(nome_host, arquivo, cenario,
           f"HTTP: {(t_http_fim-t_http_ini)*1000:.1f} ms | "
           f"Total: {(t_http_fim-t_dns_ini)*1000:.1f} ms")
 
-    # ── Passo 4: salvar arquivo e logs ────────────────────────────────────────
     if status == 200 and corpo:
         os.makedirs("data/recebidos", exist_ok=True)
         nome_saida = f"data/recebidos/tcp_{os.path.basename(arquivo)}"

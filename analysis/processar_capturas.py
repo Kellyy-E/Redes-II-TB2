@@ -1,14 +1,3 @@
-"""
-Processador de CSVs de Captura de Tráfego e Logs de Aplicação
-==============================================================
-Gera:
-  data/processados/unificado_{tamanho}.csv   — throughput por sessão
-  data/tabelas/overhead_rede.csv             — overhead de rede por protocolo/cenário/tamanho
-
-Uso:
-    python3 analysis/processar_capturas.py
-"""
-
 import os
 import re
 import pandas as pd
@@ -39,8 +28,6 @@ IP_SERVIDOR = "172.20.0.3"
 IP_DNS      = "172.20.0.2"
 
 
-# ── Logs da aplicação ──────────────────────────────────────────────────────────
-
 def processar_log_aplicacao(protocolo_label, tamanho):
     nome = f"HTTP-{protocolo_label}_{tamanho}.csv"
     caminho = os.path.join(DIR_LOGS, nome)
@@ -62,8 +49,6 @@ def processar_log_aplicacao(protocolo_label, tamanho):
     print(f"  [LOG] {nome}: {len(resultado)} registros")
     return resultado
 
-
-# ── Capturas TCP ───────────────────────────────────────────────────────────────
 
 def extrair_sessoes_tcp(df_raw):
     sessoes = []
@@ -142,13 +127,8 @@ def processar_captura_tcp(cenario_label, tamanho):
     return pd.DataFrame(registros), overhead_registros
 
 
-# ── Capturas R-UDP ─────────────────────────────────────────────────────────────
 
 def extrair_sessoes_rudp(df_raw):
-    """
-    Identifica sessões R-UDP pela porta efêmera do cliente → porta 8081.
-    Lida com a fragmentação IP reconstruindo o tamanho provável do datagrama UDP.
-    """
     sessoes_por_porta = {}
 
     for _, row in df_raw.iterrows():
@@ -178,8 +158,6 @@ def extrair_sessoes_rudp(df_raw):
         else:
             continue
 
-        # Início da sessão: Pacote do cliente para servidor com tamanho compatível com GET (260-275 bytes)
-        # O tamanho varia conforme o nome do arquivo na requisição GET (100kb vs 1mb)
         if src == IP_CLIENTE and (260 <= length <= 275) and porta not in sessoes_por_porta:
             sessoes_por_porta[porta] = {
                 "t_ini": t, "t_fim": t,
@@ -265,8 +243,6 @@ def processar_captura_rudp(cenario_label, tamanho):
     return pd.DataFrame(registros), overhead_registros
 
 
-# ── Tabela de overhead ─────────────────────────────────────────────────────────
-
 def gerar_tabela_overhead(todos_overheads):
     if not todos_overheads:
         print("  [AVISO] Nenhum dado de overhead coletado.")
@@ -309,8 +285,6 @@ def gerar_tabela_overhead(todos_overheads):
     print(f"\n  [OK] Tabela de overhead: {caminho}")
     print(resumo.to_string(index=False))
 
-
-# ── Pipeline principal ─────────────────────────────────────────────────────────
 
 def main():
     os.makedirs(DIR_SAIDA,   exist_ok=True)

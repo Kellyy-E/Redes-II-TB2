@@ -1,24 +1,3 @@
-"""
-Gerador de Gráficos e Tabelas Estatísticas — Terceira Avaliação
-================================================================
-Lê os CSVs unificados em data/processados/ e gera:
-
-Gráficos (.png em data/graficos/):
-  1. throughput_barras_{tamanho}.png  — Barras agrupadas TCP vs R-UDP por cenário
-  2. throughput_boxplot_{tamanho}.png — Boxplot por protocolo × cenário
-  3. duracao_dns_barras.png           — Tempo médio de resolução DNS por cenário
-  4. tempo_empilhado_{tamanho}.png    — Barras empilhadas DNS + HTTP por protocolo × cenário
-  5. overhead_rede_barras.png         — Comparativo de overhead de rede por protocolo/cenário
-
-Tabelas (.csv em data/tabelas/):
-  1. estatisticas_{tamanho}.csv       — Média, desvio padrão, mín, máx por grupo
-  2. estatisticas_dns.csv             — Mesmas métricas para o tempo de resolução DNS
-  3. overhead_rede.csv                — Tabela de overhead (gerada pelo script de processamento)
-
-Uso:
-  python3 analysis/gerar_graficos.py
-"""
-
 import os
 import warnings
 import pandas as pd
@@ -29,7 +8,7 @@ import matplotlib.pyplot as plt
 
 warnings.filterwarnings("ignore")
 
-# ─── Caminhos ─────────────────────────────────────────────────────────────────
+# Caminhos 
 SCRIPT_DIR    = os.path.dirname(os.path.abspath(__file__))
 if os.path.exists(os.path.join(SCRIPT_DIR, "data")):
     BASE_DIR = SCRIPT_DIR
@@ -49,7 +28,6 @@ CEN_LABEL = {"cenarioA": "Cenário A\n(0% perda / 10ms)",
              "cenarioB": "Cenário B\n(5% perda / 50ms)",
              "cenarioC": "Cenário C\n(10% perda / 100ms)"}
 
-# Paleta consistente
 COR = {
     ("TCP",  "Aplicação"): "#2196F3",
     ("TCP",  "Captura"):   "#0D47A1",
@@ -62,7 +40,7 @@ COR_DNS  = {"TCP": "#4CAF50", "RUDP": "#9C27B0"}
 DPI = 150
 
 
-# ─── Utilitários ──────────────────────────────────────────────────────────────
+#Utilitários
 
 def salvar(fig, nome):
     os.makedirs(DIR_GRAFICOS, exist_ok=True)
@@ -103,7 +81,7 @@ def carregar_dns():
     return pd.concat(frames, ignore_index=True)
 
 
-# ─── Gráfico 1: Barras agrupadas de throughput ────────────────────────────────
+#Gráficos
 
 def grafico_barras_throughput(tamanho):
     df = carregar_unificado(tamanho)
@@ -149,7 +127,6 @@ def grafico_barras_throughput(tamanho):
     salvar(fig, f"throughput_barras_{tamanho}.png")
 
 
-# ─── Gráfico 2: Boxplot de throughput ─────────────────────────────────────────
 
 def grafico_boxplot_throughput(tamanho):
     df = carregar_unificado(tamanho)
@@ -190,8 +167,6 @@ def grafico_boxplot_throughput(tamanho):
     fig.tight_layout()
     salvar(fig, f"throughput_boxplot_{tamanho}.png")
 
-
-# ─── Gráfico 3: Tempo de resolução DNS ────────────────────────────────────────
 
 def grafico_dns():
     df = carregar_dns()
@@ -234,8 +209,6 @@ def grafico_dns():
     fig.tight_layout()
     salvar(fig, "duracao_dns_barras.png")
 
-
-# ─── Gráfico 4: Barras empilhadas DNS + HTTP ──────────────────────────────────
 
 def grafico_tempo_empilhado(tamanho):
     df_http = carregar_unificado(tamanho)
@@ -292,8 +265,6 @@ def grafico_tempo_empilhado(tamanho):
     salvar(fig, f"tempo_empilhado_{tamanho}.png")
 
 
-# ─── Gráfico 5: Overhead de Rede ──────────────────────────────────────────────
-
 def grafico_overhead_rede():
     caminho = os.path.join(DIR_TABELAS, "overhead_rede.csv")
     if not os.path.exists(caminho):
@@ -302,7 +273,6 @@ def grafico_overhead_rede():
     
     df = pd.read_csv(caminho)
     
-    # Vamos gerar um gráfico para cada tamanho
     for tamanho in TAMANHOS:
         sub = df[df["Tamanho"] == tamanho]
         if sub.empty: continue
@@ -325,7 +295,6 @@ def grafico_overhead_rede():
                           color=COR_PROT[prot], alpha=0.8,
                           label=prot, edgecolor="white")
             
-            # Adiciona os valores em cima das barras
             for bar in bars:
                 height = bar.get_height()
                 ax.annotate(f'{height:.1f}%',
@@ -345,7 +314,7 @@ def grafico_overhead_rede():
         salvar(fig, f"overhead_rede_barras_{tamanho}.png")
 
 
-# ─── Tabela 1: Estatísticas de throughput ─────────────────────────────────────
+# Tabelas
 
 def tabela_estatisticas(tamanho):
     df = carregar_unificado(tamanho)
@@ -359,7 +328,6 @@ def tabela_estatisticas(tamanho):
     print(f"  [OK] {caminho}")
 
 
-# ─── Tabela 2: Estatísticas DNS ───────────────────────────────────────────────
 
 def tabela_estatisticas_dns():
     df = carregar_dns()
@@ -381,7 +349,6 @@ def tabela_estatisticas_dns():
     print(f"  [OK] {caminho}")
 
 
-# ─── Pipeline principal ────────────────────────────────────────────────────────
 
 def main():
     os.makedirs(DIR_GRAFICOS, exist_ok=True)
